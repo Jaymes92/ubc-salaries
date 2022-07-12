@@ -1,7 +1,11 @@
 import PyPDF2
 import re
+import os
 from employees import Employee
 import matplotlib.pyplot as plt
+
+if not os.path.exists("figures"):
+    os.makedirs("figures")
 
 PATH_2019 = "data/2019_report.pdf"
 PATH_2020 = "data/2020_report.pdf"
