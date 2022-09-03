@@ -10,3 +10,10 @@ class Employee:
         self.expenses_2019 = None
         self.expenses_2020 = None
         self.expenses_2021 = None
+
+    def __repr__(self) -> str:
+        result = ""
+        for key, value in self.__dict__.items():
+            if value is not None:
+                result += f"{key}: {value}\n"
+        return result
