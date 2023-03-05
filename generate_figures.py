@@ -1,4 +1,4 @@
-import PyPDF2
+import fitz
 import re
 import os
 from employees import Employee
