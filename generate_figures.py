@@ -4,8 +4,8 @@ import os
 from employees import Employee
 import matplotlib.pyplot as plt
 
-if not os.path.exists("figures"):
-    os.makedirs("figures")
+
+os.makedirs("figures", exist_ok=True)
 
 PATH_2019 = "data/2019_report.pdf"
 PATH_2020 = "data/2020_report.pdf"
@@ -56,11 +56,11 @@ def trim_name(data):
 report_text = {}
 for report_name in [PATH_2019, PATH_2020, PATH_2021]:
     with open(report_name, "rb") as file:
-        pdf = PyPDF2.PdfFileReader(file)
+        pdf = PyPDF2.PdfReader(file)
         report_text[report_name] = []
-        for n in range(pdf.getNumPages()):
-            page = pdf.getPage(n)
-            text = page.extractText()
+        for n in range(len(pdf.pages)):
+            page = pdf.pages[n]
+            text = page.extract_text()
             text = text.replace("\n", "")
             text = text.replace("$", "")
             text = text.replace("Name", "")
