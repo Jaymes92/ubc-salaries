@@ -50,17 +50,14 @@ def trim_name(data):
     stripped_name = " ".join(stripped_name)
     return stripped_name
 
-
 # Extract and clean text from all three reports. Each dictionary entry contains a data list for a given report/year.
 # Each entry in a list for a given report/year represents the cleaned text from one data page.
 report_text = {}
 for report_name in [PATH_2019, PATH_2020, PATH_2021]:
-    with open(report_name, "rb") as file:
-        pdf = PyPDF2.PdfReader(file)
+    with fitz.open(report_name) as file:
         report_text[report_name] = []
-        for n in range(len(pdf.pages)):
-            page = pdf.pages[n]
-            text = page.extract_text()
+        for page in file:
+            text = page.get_text()
             text = text.replace("\n", "")
             text = text.replace("$", "")
             text = text.replace("Name", "")
@@ -68,11 +65,11 @@ for report_name in [PATH_2019, PATH_2020, PATH_2021]:
             text = re.sub(r"\s+", " ", text)
             # This phrase shows up on pages that contain data and is easy to split around.
             text = text.split("Remuneration Expenses*")
-            # Pages with data will have it in these two indices. If not it won't split, and this will throw an error.
             try:
                 report_text[report_name].append(f"{text[1].strip()} {text[2].strip()}")
             except IndexError:
                 pass
+
 
 # Dictionary where each entry will be a list of all regex matches for a given report/year.
 data_matches = {}
