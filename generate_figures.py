@@ -10,10 +10,11 @@ os.makedirs("figures", exist_ok=True)
 PATH_2019 = "data/2019_report.pdf"
 PATH_2020 = "data/2020_report.pdf"
 PATH_2021 = "data/2021_report.pdf"
+PATH_2022 = "data/2022_report.pdf"
 
 
-# Accept employee data in form of the regex match. Pass in the path to add correct year's data - hires in 2021/21
-# will not be added with the 2019 batch.
+# Accept employee data in form of the regex match. Pass in the path to add correct year's data - hires in a later year
+# will not be in a prior year's batch of data.
 def add_employee(data, name):
     full_name = f"{data[2]} {data[0]}"
     search_name = trim_name(data)
@@ -36,6 +37,12 @@ def add_employee(data, name):
         new_employee.expenses_2021 = data[5]
         new_employee.search_name = search_name
         employee_list.append(new_employee)
+    if name == PATH_2022:
+        new_employee.full_name_2022 = full_name
+        new_employee.salary_2022 = data[4]
+        new_employee.expenses_2022 = data[5]
+        new_employee.search_name = search_name
+        employee_list.append(new_employee)
 
 
 # Trim away initials and remove '.' to help search for matches between years. Do as LAST, FIRST to use this name for
@@ -53,7 +60,7 @@ def trim_name(data):
 # Extract and clean text from all three reports. Each dictionary entry contains a data list for a given report/year.
 # Each entry in a list for a given report/year represents the cleaned text from one data page.
 report_text = {}
-for report_name in [PATH_2019, PATH_2020, PATH_2021]:
+for report_name in [PATH_2019, PATH_2020, PATH_2021, PATH_2022]:
     with fitz.open(report_name) as file:
         report_text[report_name] = []
         for page in file:
@@ -117,6 +124,20 @@ for report_name, report_data in data_matches.items():
                     break
             if not match_found:
                 add_employee(entry, report_name)
+    elif report_name == PATH_2022:
+        # Add data to existing employee if search name found. Otherwise, add as a new employee.
+        for entry in report_data:
+            search_name = trim_name(entry)
+            match_found = False
+            for employee in employee_list:
+                if employee.search_name == search_name:
+                    employee.full_name_2022 = f"{entry[2]} {entry[0]}"
+                    employee.salary_2022 = entry[4]
+                    employee.expenses_2022 = entry[5]
+                    match_found = True
+                    break
+            if not match_found:
+                add_employee(entry, report_name)           
     else:
         print("God help you if you made it here.")
 
@@ -125,13 +146,13 @@ for report_name, report_data in data_matches.items():
 fig, ax = plt.subplots()
 for employee in employee_list:
     salary = []
-    for sal in [employee.salary_2019, employee.salary_2020, employee.salary_2021]:
+    for sal in [employee.salary_2019, employee.salary_2020, employee.salary_2021, employee.salary_2022]:
         if sal:
             sal = sal.replace(",", "")
             salary.append(int(sal))
         else:
             salary.append(0)
-    ax.bar(["2019", "2020", "2021"], salary)
+    ax.bar(["2019", "2020", "2021", "2022"], salary)
     ax.set_title(employee.search_name)
     plt.xlabel("Year")
     plt.ylabel("Salary ($)")
