@@ -45,17 +45,15 @@ def add_employee(data, name):
         employee_list.append(new_employee)
 
 
-# Trim away initials and remove '.' to help search for matches between years. Do as LAST, FIRST to use this name for
-# the saving name for the figures.
+# Only look at first name in both first and last names (as it isn't consistent year to year). Return LAST, FIRST for easy search name comparisons.
 def trim_name(data):
-    full_name = f"{data[0].replace('.', '')}, {data[2].replace('.', '')}"
-    split_name = full_name.split(" ")
-    stripped_name = []
-    for name in split_name:
-        if len(name) != 1:
-            stripped_name.append(name.title())
-    stripped_name = " ".join(stripped_name)
+    first_name = data[2].split(" ")[0]
+    first_name = first_name.replace(".", "")
+    last_name = data[0].split(" ")[0]
+    last_name = last_name.replace(".", "")
+    stripped_name = f"{last_name}, {first_name}"
     return stripped_name
+
 
 # Extract and clean text from all three reports. Each dictionary entry contains a data list for a given report/year.
 # Each entry in a list for a given report/year represents the cleaned text from one data page.
@@ -143,18 +141,18 @@ for report_name, report_data in data_matches.items():
 
 
 # Create one plot. Clear and re-plot and save with different title. Generating and closing many figures will crash PC.
-fig, ax = plt.subplots()
-for employee in employee_list:
-    salary = []
-    for sal in [employee.salary_2019, employee.salary_2020, employee.salary_2021, employee.salary_2022]:
-        if sal:
-            sal = sal.replace(",", "")
-            salary.append(int(sal))
-        else:
-            salary.append(0)
-    ax.bar(["2019", "2020", "2021", "2022"], salary)
-    ax.set_title(employee.search_name)
-    plt.xlabel("Year")
-    plt.ylabel("Salary ($)")
-    plt.savefig(f"./figures/{employee.search_name}")
-    ax.clear()
+# fig, ax = plt.subplots()
+# for employee in employee_list:
+#     salary = []
+#     for sal in [employee.salary_2019, employee.salary_2020, employee.salary_2021, employee.salary_2022]:
+#         if sal:
+#             sal = sal.replace(",", "")
+#             salary.append(int(sal))
+#         else:
+#             salary.append(0)
+#     ax.bar(["2019", "2020", "2021", "2022"], salary)
+#     ax.set_title(employee.search_name)
+#     plt.xlabel("Year")
+#     plt.ylabel("Salary ($)")
+#     plt.savefig(f"./figures/{employee.search_name}")
+#     ax.clear()
