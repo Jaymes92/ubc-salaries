@@ -48,9 +48,9 @@ def add_employee(data, name):
 # Only look at first name in both first and last names (as it isn't consistent year to year). Return LAST, FIRST for easy search name comparisons.
 def trim_name(data):
     first_name = data[2].split(" ")[0]
-    first_name = first_name.replace(".", "")
+    first_name = first_name.replace(".", "").replace("(", "").replace(")", "")
     last_name = data[0].split(" ")[0]
-    last_name = last_name.replace(".", "")
+    last_name = last_name.replace(".", "").replace("(", "").replace(")", "")
     stripped_name = f"{last_name}, {first_name}"
     return stripped_name
 
