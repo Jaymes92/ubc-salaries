@@ -141,18 +141,18 @@ for report_name, report_data in data_matches.items():
 
 
 # Create one plot. Clear and re-plot and save with different title. Generating and closing many figures will crash PC.
-# fig, ax = plt.subplots()
-# for employee in employee_list:
-#     salary = []
-#     for sal in [employee.salary_2019, employee.salary_2020, employee.salary_2021, employee.salary_2022]:
-#         if sal:
-#             sal = sal.replace(",", "")
-#             salary.append(int(sal))
-#         else:
-#             salary.append(0)
-#     ax.bar(["2019", "2020", "2021", "2022"], salary)
-#     ax.set_title(employee.search_name)
-#     plt.xlabel("Year")
-#     plt.ylabel("Salary ($)")
-#     plt.savefig(f"./figures/{employee.search_name}")
-#     ax.clear()
+fig, ax = plt.subplots()
+for employee in employee_list:
+    salary = []
+    for sal in [employee.salary_2019, employee.salary_2020, employee.salary_2021, employee.salary_2022]:
+        if sal:
+            sal = sal.replace(",", "")
+            salary.append(int(sal))
+        else:
+            salary.append(0)
+    ax.bar(["2019", "2020", "2021", "2022"], salary)
+    ax.set_title(employee.search_name)
+    plt.xlabel("Year")
+    plt.ylabel("Salary ($)")
+    plt.savefig(f"./figures/{employee.search_name}")
+    ax.clear()
